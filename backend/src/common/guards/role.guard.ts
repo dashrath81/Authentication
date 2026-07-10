@@ -19,14 +19,13 @@ export class RolesGuard implements CanActivate {
       ],
     );
 
-    // If no @Roles() decorator is present, allow access.
+    // If no Roles decorator is present, allow access.
     if (!requiredRoles) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
 
-    // Added by JwtAuthGuard
     const user = request.user;
 
     return requiredRoles.includes(user.role);
