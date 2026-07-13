@@ -12,6 +12,13 @@ enum Role {
   EMPLOYEE
 }
 
+enum Status {
+  ASSIGNED
+  PEDING
+  IN_PROGRESS
+  COMPLETED
+}
+
 model Employee {
   id       Int      @id @default(autoincrement())
   name     String
@@ -19,16 +26,30 @@ model Employee {
   password String
   role     Role     @default(EMPLOYEE)
   profile  Profile?
+  tasks    Tasks[]
 }
 
 model Profile {
-  id      Int     @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   dateOfBirth DateTime?
-  phone   String?
-  address String?
-  city    String?
-  skills  String?
+  phone       String?
+  address     String?
+  city        String?
+  skills      String?
 
   employeeId Int      @unique
   employee   Employee @relation(fields: [employeeId], references: [id])
+}
+
+model Tasks {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  dueDate     DateTime
+  status      Status
+
+  createdAt DateTime @default(now())
+
+  employeeId Int
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
 }

@@ -26,5 +26,23 @@ export class EmployeeService {
       throw new BadRequestException('Employe Can not be Updated!');
     }
   }
-    
+
+  async findAll() {
+    try {
+      const Employe = this.prisma.employee.findMany({
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+        },
+      });
+      if (!Employe) {
+        throw new NotFoundException('Employee Not Found!');
+      }
+      return Employe;
+    } catch {
+      throw new BadRequestException('Can Not Find!');
+    }
+  }
 }

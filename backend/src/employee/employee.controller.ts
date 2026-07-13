@@ -12,6 +12,9 @@ import {
 import { EmployeeService } from './employee.service';
 import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { JwtAuthGuard } from '../common/guards/jwt.guard';
+import { RolesGuard } from '../common/guards/role.guard';
+import { Roles } from '../common/decorator/role.decorator';
+import { Role } from '@prisma/client';
 
 @Controller('employee')
 export class EmployeeController {
@@ -24,6 +27,13 @@ export class EmployeeController {
     @Body() updateEmployeeDto: UpdateEmployeeDto,
   ) {
     return this.employeeService.update(+id, updateEmployeeDto);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard,RolesGuard)
+  @Roles(Role.ADMIN)
+  findAll(){
+    return this.employeeService.findAll()
   }
 
 
