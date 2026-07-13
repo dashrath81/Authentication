@@ -20,13 +20,14 @@ enum Status {
 }
 
 model Employee {
-  id       Int      @id @default(autoincrement())
+  id       Int             @id @default(autoincrement())
   name     String
-  email    String   @unique
+  email    String          @unique
   password String
-  role     Role     @default(EMPLOYEE)
+  role     Role            @default(EMPLOYEE)
   profile  Profile?
   tasks    Tasks[]
+  projects ProjectMember[]
 }
 
 model Profile {
@@ -52,4 +53,24 @@ model Tasks {
 
   employeeId Int
   employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+}
+
+model Project {
+  id          Int             @id @default(autoincrement())
+  name        String
+  description String
+  deadline    DateTime
+  members     ProjectMember[]
+}
+
+model ProjectMember {
+  id         Int      @id @default(autoincrement())
+  employeeId Int
+  projectID  Int
+  assignedAt DateTime @default(now())
+
+  employee Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  project  Project  @relation(fields: [projectID], references: [id], onDelete: Cascade)
+
+  @@unique([employeeId, projectID])
 }
