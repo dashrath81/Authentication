@@ -5,7 +5,4 @@ export class UpdateEmployeeDto {
   @IsString()
   name?: string;
 
-  @IsOptional()
-  @IsEmail()
-  email?: string;
 }

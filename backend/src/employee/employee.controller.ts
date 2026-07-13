@@ -26,13 +26,6 @@ export class EmployeeController {
     return this.employeeService.update(+id, updateEmployeeDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.employeeService.remove(+id);
-  }
-  @Get('profile')
-  @UseGuards(JwtAuthGuard)
-  profile(@Req() req) {
-    return req.user;
-  }
+
+
 }

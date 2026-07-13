@@ -1,5 +1,3 @@
-
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,9 +13,22 @@ enum Role {
 }
 
 model Employee {
-  id       Int    @id @default(autoincrement())
+  id       Int      @id @default(autoincrement())
   name     String
-  email    String @unique
+  email    String   @unique
   password String
-  role     Role   @default(EMPLOYEE)
+  role     Role     @default(EMPLOYEE)
+  profile  Profile?
+}
+
+model Profile {
+  id      Int     @id @default(autoincrement())
+  dateOfBirth DateTime?
+  phone   String?
+  address String?
+  city    String?
+  skills  String?
+
+  employeeId Int      @unique
+  employee   Employee @relation(fields: [employeeId], references: [id])
 }
