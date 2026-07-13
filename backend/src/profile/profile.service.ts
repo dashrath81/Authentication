@@ -6,7 +6,6 @@ import {
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { EmployeeService } from '../employee/employee.service';
 
 @Injectable()
 export class ProfileService {
