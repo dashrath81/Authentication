@@ -24,35 +24,35 @@ export class ProjectController {
   //create project
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
-  create(@Body() createProjectDto: CreateProjectDto,@Req() req) {
-    return this.projectService.create(createProjectDto,req.user.id);
+  @Roles(Role.ADMIN, Role.MANAGER)
+  create(@Body() createProjectDto: CreateProjectDto, @Req() req) {
+    return this.projectService.create(createProjectDto, req.user.id);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MANAGER)
   findAll() {
     return this.projectService.findAll();
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MANAGER)
   findOne(@Param('id') id: string) {
     return this.projectService.findOne(Number(id));
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MANAGER)
   update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
     return this.projectService.update(Number(id), updateProjectDto);
   }
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MANAGER)
   remove(@Param('id') id: string) {
     return this.projectService.remove(Number(id));
   }

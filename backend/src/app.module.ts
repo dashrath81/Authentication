@@ -10,9 +10,10 @@ import { TasksModule } from './tasks/tasks.module';
 import { ProjectModule } from './project/project.module';
 import { ProjectMembersModule } from './project-members/project-members.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { DepartmentModule } from './department/department.module';
 
 @Module({
-  imports: [EmployeeModule, AuthModule, PrismaModule, ProfileModule, TasksModule, ProjectModule, ProjectMembersModule, DashboardModule],
+  imports: [EmployeeModule, AuthModule, PrismaModule, ProfileModule, TasksModule, ProjectModule, ProjectMembersModule, DashboardModule, DepartmentModule],
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })

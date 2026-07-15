@@ -19,7 +19,8 @@ export class EmployeeController {
   constructor(private readonly employeeService: EmployeeService) {}
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
   update(
     @Param('id') id: string,
     @Body() updateEmployeeDto: UpdateEmployeeDto,
@@ -28,12 +29,9 @@ export class EmployeeController {
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard,RolesGuard)
-  @Roles(Role.ADMIN)
-  findAll(){
-    return this.employeeService.findAll()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN, Role.MANAGER)
+  findAll() {
+    return this.employeeService.findAll();
   }
-
-
-
 }

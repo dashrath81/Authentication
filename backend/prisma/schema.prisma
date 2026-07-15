@@ -10,6 +10,7 @@ datasource db {
 enum Role {
   ADMIN
   EMPLOYEE
+  MANAGER
 }
 
 enum Status {
@@ -20,15 +21,19 @@ enum Status {
 }
 
 model Employee {
-  id       Int             @id @default(autoincrement())
+  id       Int    @id @default(autoincrement())
   name     String
-  email    String          @unique
+  email    String @unique
   password String
-  role     Role            @default(EMPLOYEE)
-  profile  Profile?
-  tasks    Tasks[]
-  projects ProjectMember[]
-  createdProjects Project[] @relation("ProjectCreator")
+  role     Role   @default(EMPLOYEE)
+
+  profile         Profile?
+  tasks           Tasks[]
+  projects        ProjectMember[]
+  createdProjects Project[]       @relation("ProjectCreator")
+
+  departmentId Int?
+  Department   Department? @relation(fields: [departmentId], references: [id])
 }
 
 model Profile {
@@ -41,6 +46,17 @@ model Profile {
 
   employeeId Int      @unique
   employee   Employee @relation(fields: [employeeId], references: [id])
+}
+
+model Department {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  employee Employee[]
 }
 
 model Tasks {

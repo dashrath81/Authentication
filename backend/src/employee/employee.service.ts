@@ -18,9 +18,16 @@ export class EmployeeService {
       if (!employee) {
         throw new NotFoundException('Employe Not Found!');
       }
-      return this.prisma.employee.update({
+      return await this.prisma.employee.update({
         where: { id },
         data: updateEmployeeDto,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          departmentId: true,
+        },
       });
     } catch (error) {
       throw new BadRequestException('Employe Can not be Updated!');

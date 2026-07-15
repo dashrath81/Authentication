@@ -23,7 +23,7 @@ export class TasksController {
   // Create Tasks
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MANAGER)
   create(@Body() createTaskDto: CreateTaskDto) {
     return this.tasksService.create(createTaskDto);
   }
@@ -31,7 +31,7 @@ export class TasksController {
   //Get All Tasks
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MANAGER)
   findAll() {
     return this.tasksService.findAll();
   }
@@ -39,7 +39,7 @@ export class TasksController {
   // Get Singele Task
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MANAGER)
   findOne(@Param('id') id: string) {
     return this.tasksService.findOne(Number(id));
   }
@@ -51,10 +51,10 @@ export class TasksController {
     return this.tasksService.findByEmployee(employeeId);
   }
 
-  // Update Tasks Admin Only
+  // Update Tasks Admin and manager Only
   @Patch(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MANAGER)
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
     return this.tasksService.update(Number(id), updateTaskDto);
   }
@@ -69,7 +69,7 @@ export class TasksController {
   //Delete Tasks
   @Delete(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MANAGER)
   remove(@Param('id') id: string) {
     return this.tasksService.remove(Number(id));
   }
