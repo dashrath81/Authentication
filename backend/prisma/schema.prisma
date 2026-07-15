@@ -28,6 +28,7 @@ model Employee {
   profile  Profile?
   tasks    Tasks[]
   projects ProjectMember[]
+  createdProjects Project[] @relation("ProjectCreator")
 }
 
 model Profile {
@@ -59,7 +60,10 @@ model Project {
   id          Int             @id @default(autoincrement())
   name        String
   description String
+  createdAt   DateTime        @default(now())
+  createdBy   Int
   deadline    DateTime
+  creator     Employee        @relation("ProjectCreator", fields: [createdBy], references: [id])
   members     ProjectMember[]
 }
 

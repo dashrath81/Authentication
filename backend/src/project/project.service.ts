@@ -1,19 +1,27 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { PrismaService } from '../prisma/prisma.service';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class ProjectService {
   constructor(private prisma: PrismaService) {}
-  async create(createProjectDto: CreateProjectDto) {
+  async create(createProjectDto: CreateProjectDto, userId: number) {
     try {
       const project = this.prisma.project.create({
         data: {
           name: createProjectDto.name,
           description: createProjectDto.description,
           deadline: createProjectDto.deadline,
+          creator: {
+            connect: {
+              id: userId,
+            },
+          },
         },
       });
       return project;
@@ -28,19 +36,35 @@ export class ProjectService {
 
   findOne(id: number) {
     const project = this.prisma.project.findUnique({
-      where:{id},
-    })
-    if(!project){
-      throw new NotFoundException('Can Not Fount Project!')
+      where: { id },
+    });
+    if (!project) {
+      throw new NotFoundException('Can Not Fount Project!');
     }
     return project;
   }
 
-  update(id: number, updateProjectDto: UpdateProjectDto) {
-    return `This action updates a #${id} project`;
+  async update(id: number, updateProjectDto: UpdateProjectDto) {
+    try {
+      const project = await this.prisma.project.findUnique({ where: { id } });
+      if (!project) {
+        throw new NotFoundException(`Project with ID ${id} Not Found!`);
+      }
+      const updateProject = await this.prisma.project.update({
+        where: { id },
+        data: updateProjectDto,
+      });
+      return updateProject;
+    } catch {
+      throw new BadRequestException('Can Not Update!');
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} project`;
+  async remove(id: number) {
+    try {
+      return await this.prisma.project.delete({ where: { id } });
+    } catch {
+      throw new BadRequestException('Can Not Delete!');
+    }
   }
 }

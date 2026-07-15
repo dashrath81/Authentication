@@ -1,5 +1,8 @@
+import { IsArray, IsInt } from 'class-validator';
+
 export class CreateProjectMemberDto {
-  employeeId!: number;
+  @IsArray()
+  employeeId!: number[];
+  @IsInt()
   projectID!: number;
-  assignedAt!: Date;
 }
