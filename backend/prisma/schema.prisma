@@ -34,6 +34,9 @@ model Employee {
 
   departmentId Int?
   Department   Department? @relation(fields: [departmentId], references: [id])
+
+  leavesRequested Leave[] @relation("EmployeeLeaves")
+  leavesApproved  Leave[] @relation("LeaveApprover")
 }
 
 model Profile {
@@ -44,7 +47,7 @@ model Profile {
   city        String?
   skills      String?
 
-  image       String?
+  image String?
 
   employeeId Int      @unique
   employee   Employee @relation(fields: [employeeId], references: [id])
@@ -95,4 +98,41 @@ model ProjectMember {
   project  Project  @relation(fields: [projectID], references: [id], onDelete: Cascade)
 
   @@unique([employeeId, projectID])
+}
+
+enum LeaveStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum LeaveType {
+  CASUAL
+  SICK
+  ANNUAL
+  UNPAID
+  MATERNITY
+  PATERNITY
+}
+
+model Leave {
+  id         Int         @id @default(autoincrement())
+  employeeId Int
+  approvedBy Int?
+  leaveType  LeaveType
+  startDate  DateTime
+  endDate    DateTime
+  reason     String
+  status     LeaveStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  approvedAt DateTime?
+
+  employee Employee  @relation("EmployeeLeaves", fields: [employeeId], references: [id])
+  approver Employee? @relation("LeaveApprover", fields: [approvedBy], references: [id])
+
+  @@index([employeeId])
+  @@index([approvedBy])
+  @@index([status])
 }
