@@ -44,6 +44,8 @@ model Profile {
   city        String?
   skills      String?
 
+  image       String?
+
   employeeId Int      @unique
   employee   Employee @relation(fields: [employeeId], references: [id])
 }

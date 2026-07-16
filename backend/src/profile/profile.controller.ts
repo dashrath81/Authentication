@@ -1,16 +1,22 @@
 import {
+  Body,
   Controller,
   Get,
   Post,
-  Body,
   Patch,
-  Param,
   Delete,
+  Param,
+  ParseIntPipe,
+  UploadedFile,
+  UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { multerOptions } from './multer.config';
 import { JwtAuthGuard } from '../common/guards/jwt.guard';
 import { RolesGuard } from '../common/guards/role.guard';
 import { Roles } from '../common/decorator/role.decorator';
@@ -20,40 +26,55 @@ import { Role } from '@prisma/client';
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
-  //Profile Create
+  //create profile
   @Post()
   @UseGuards(JwtAuthGuard)
   create(@Body() createProfileDto: CreateProfileDto) {
     return this.profileService.create(createProfileDto);
   }
 
-  //Get All Profile
+  //get all profile
   @Get()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
+  
   findAll() {
     return this.profileService.findAll();
   }
 
-  //Get Singel Profile
-  @Get(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
-  findOne(@Param('id') id: string) {
-    return this.profileService.findOne(Number(id));
+  //get profile
+  @Get(':employeeId')
+  @UseGuards(JwtAuthGuard)
+  findOne(@Param('employeeId', ParseIntPipe) employeeId: number) {
+    return this.profileService.findOne(employeeId);
   }
 
-  //Update Profile
-  @Patch(':id')
-  @UseGuards(JwtAuthGuard)
-  update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto) {
-    return this.profileService.update(Number(id), updateProfileDto);
+  //update profile
+  @Patch(':employeeId')
+  @UseInterceptors(FileInterceptor('image', multerOptions))
+  update(
+    @Param('employeeId') employeeId: number,
+    @Body() dto: UpdateProfileDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.profileService.update(employeeId, dto, file);
   }
 
-  //Delete Profile
-  @Delete(':id')
+  //delete profile
+  @Delete(':employeeId')
   @UseGuards(JwtAuthGuard)
-  remove(@Param('id') id: string) {
-    return this.profileService.remove(Number(id));
+  remove(@Param('employeeId', ParseIntPipe) employeeId: number) {
+    return this.profileService.remove(employeeId);
+  }
+
+  //profile img
+  @Post(':employeeId/upload')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('image', multerOptions))
+  uploadImage(
+    @Param('employeeId', ParseIntPipe) employeeId: number,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.profileService.uploadImage(employeeId, file.filename);
   }
 }
